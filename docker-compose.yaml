@@ -1,0 +1,22 @@
+version: "3"
+services: 
+  app:
+    image: dalongrong/alpine-oraclejdk8:8.131.11-full-arthas-tz
+    volumes: 
+    - "./app:/app"
+    - "./mybooks:/var/opt/mybooks"
+    command: java -jar /app/hazelcast-jet-app.jar
+  jet:
+    image: hazelcast/hazelcast-jet
+    environment: 
+    - "LOGGING_LEVEL=DEBUG"
+    volumes: 
+    - "./mybooks:/var/opt/mybooks"
+    ports:
+    - "5701:5701"
+  manage:
+    image:  hazelcast/hazelcast-jet-management-center
+    environment: 
+    - "JET_MEMBER_ADDRESS=jet:5701"
+    ports:
+    - "8081:8081"
